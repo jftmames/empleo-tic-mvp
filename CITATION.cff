@@ -30,7 +30,13 @@ keywords:
   - Spain ICT employment
   - statistical performativity
 license: MIT
-version: 0.2.0
+version: 1.0.2
+doi: 10.5281/zenodo.19888187
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.19888187
+    description: "DOI de Zenodo - Version DOI v1.0.2"
+
 date-released: "2026-04-29"
 url: "https://github.com/jtamames/empleo-tic-mvp"
 repository-code: "https://github.com/jtamames/empleo-tic-mvp"
