@@ -148,13 +148,14 @@ def get_pipeline_status() -> pd.DataFrame:
     """Devuelve el estado de frescura de todas las fuentes como DataFrame."""
     rows = []
     for key, src in SOURCES.items():
+        age = src.age_days
         rows.append({
             "fuente": src.name,
             "método": src.method.value,
             "automatizable": "Sí" if src.automatable else "No",
             "última_actualización": (src.last_modified.strftime("%Y-%m-%d %H:%M")
                                      if src.last_modified else "N/A"),
-            "días_desde_última": src.age_days if src.age_days is not None else "N/A",
+            "días_desde_última": str(age) if age is not None else "N/A",
             "estado": src.status().value,
             "próxima_publicación": src.next_publication_hint,
             "notas": src.notes,
@@ -248,7 +249,7 @@ def get_publication_calendar(year: Optional[int] = None) -> pd.DataFrame:
         rows.append({
             "trimestre": label,
             "fecha_publicación": fecha.strftime("%Y-%m-%d"),
-            "días_hasta": days_until if days_until > 0 else "publicado",
+            "días_hasta": f"{days_until} días" if days_until > 0 else "publicado",
             "descripción": descripcion,
             "estado": "próximo" if days_until > 0 else "publicado",
         })
