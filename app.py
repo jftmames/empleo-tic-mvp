@@ -161,7 +161,7 @@ with tab1:
                   f"{int(delta_anual):+,}".replace(",", "."),
                   "vs. mismo trim. 2025")
 
-    st.plotly_chart(macro_epa(df_macro_f), use_container_width=True)
+    st.plotly_chart(macro_epa(df_macro_f), width="stretch")
 
     st.markdown("""
     <div style='background:#ebe6da; border-left: 3px solid #7a1f1f;
@@ -198,7 +198,7 @@ with tab2:
 
     st.plotly_chart(
         divergencia_metricas(div["rama_sector_tic"], div["ocupacion_especialistas"]),
-        use_container_width=True,
+        width="stretch",
     )
 
     st.markdown(f"""
@@ -219,7 +219,7 @@ with tab2:
     </div>
     """, unsafe_allow_html=True)
 
-    st.plotly_chart(serie_especialistas(df_especialistas), use_container_width=True)
+    st.plotly_chart(serie_especialistas(df_especialistas), width="stretch")
 
 # ──────────────────────────── TAB III: Subsectores ───────────────────────────
 with tab3:
@@ -233,7 +233,7 @@ with tab3:
 
     col1, col2 = st.columns([2, 1])
     with col1:
-        st.plotly_chart(comparacion_subsectores(df_comp), use_container_width=True)
+        st.plotly_chart(comparacion_subsectores(df_comp), width="stretch")
     with col2:
         st.markdown("#### Variaciones absolutas")
         for _, row in df_comp.iterrows():
@@ -249,7 +249,7 @@ with tab3:
             </div>
             """, unsafe_allow_html=True)
 
-    st.plotly_chart(serie_sector_tic(df_sector_f), use_container_width=True)
+    st.plotly_chart(serie_sector_tic(df_sector_f), width="stretch")
 
     st.markdown("""
     <div style='background:#ebe6da; border-left: 3px solid #b8860b;
@@ -294,7 +294,7 @@ with tab4:
             {row['pct_sobre_total_tic']:.1f}% del empleo TIC nacional
             """)
 
-    st.plotly_chart(mapa_concentracion(df_ccaa), use_container_width=True)
+    st.plotly_chart(mapa_concentracion(df_ccaa), width="stretch")
 
     st.markdown("""
     <div style='background:#1a1612; color: #f4f1ea; padding: 1.8rem 2rem;
@@ -339,7 +339,7 @@ with tab5:
          "Pertenecía a": "Servicios (íntegramente)",
          "CNAE-2025": "Servicios + Industria + Construcción"},
     ])
-    st.dataframe(transiciones, use_container_width=True, hide_index=True)
+    st.dataframe(transiciones, width="stretch", hide_index=True)
 
     st.markdown("""
     <div style='background:#ebe6da; border-left: 3px solid #7a1f1f;
@@ -383,7 +383,7 @@ with tab6:
     else:
         df_show = df_macro
 
-    st.dataframe(df_show, use_container_width=True, height=420)
+    st.dataframe(df_show, width="stretch", height=420)
 
     col1, col2 = st.columns(2)
     with col1:
@@ -393,7 +393,7 @@ with tab6:
             data=csv,
             file_name=f"{dataset.lower().replace(' ', '_')}.csv",
             mime="text/csv",
-            use_container_width=True,
+            width="stretch",
         )
     with col2:
         # Excel descarga
@@ -405,7 +405,7 @@ with tab6:
             data=buffer.getvalue(),
             file_name=f"{dataset.lower().replace(' ', '_')}.xlsx",
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            use_container_width=True,
+            width="stretch",
         )
 
     st.divider()
@@ -424,7 +424,7 @@ with tab6:
         data=bundle.getvalue(),
         file_name="empleo_tic_bundle_completo.xlsx",
         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        use_container_width=True,
+        width="stretch",
     )
 
 # ──────────────────────────── TAB VII: Pipeline ──────────────────────────────
@@ -444,7 +444,7 @@ with tab7:
     # Estado de fuentes
     st.markdown("### Estado de las fuentes")
     df_pipeline = get_pipeline_status()
-    st.dataframe(df_pipeline, use_container_width=True, hide_index=True)
+    st.dataframe(df_pipeline, width="stretch", hide_index=True)
 
     # KPIs de frescura
     col1, col2, col3, col4 = st.columns(4)
@@ -467,7 +467,7 @@ with tab7:
     st.markdown("### Calendario de publicaciones EPA · INE")
     año_cal = st.selectbox("Año", [2025, 2026, 2027], index=1)
     df_cal = get_publication_calendar(año_cal)
-    st.dataframe(df_cal, use_container_width=True, hide_index=True)
+    st.dataframe(df_cal, width="stretch", hide_index=True)
 
     st.markdown("""
     <div style='background:#ebe6da; border-left: 3px solid #b8860b;
@@ -494,7 +494,7 @@ with tab7:
 
     col_a, col_b = st.columns(2)
     with col_a:
-        if st.button("📸 Crear snapshot manual", use_container_width=True):
+        if st.button("📸 Crear snapshot manual", width="stretch"):
             label = f"manual_{datetime.now().strftime('%Y%m%d_%H%M')}"
             try:
                 path = take_snapshot(label=label.split('_', 1)[1])
@@ -502,7 +502,7 @@ with tab7:
             except Exception as e:
                 st.error(f"Error: {e}")
     with col_b:
-        if st.button("🔄 Refrescar estado", use_container_width=True):
+        if st.button("🔄 Refrescar estado", width="stretch"):
             st.cache_data.clear()
             st.rerun()
 
