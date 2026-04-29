@@ -130,7 +130,7 @@ def mapa_concentracion(df_ccaa: pd.DataFrame) -> go.Figure:
         textfont=dict(family="JetBrains Mono", size=11, color=PALETA["ink"]),
     ))
     fig.update_layout(
-        **LAYOUT_BASE,
+        **{k: v for k, v in LAYOUT_BASE.items() if k != "yaxis"},
         title="Empleo TIC por Comunidad Autónoma",
         xaxis_title="Miles de ocupados en sector TIC",
         height=560,
