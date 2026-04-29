@@ -1,0 +1,67 @@
+cff-version: 1.2.0
+title: "Empleo Tecnológico en España: el millón invisible"
+message: "Si utiliza este software o sus análisis en su investigación, por favor cite como abajo."
+type: software
+authors:
+  - given-names: José
+    family-names: Fernández Tamames
+    email: jtamames@unie.es
+    affiliation: "UNIE Universidad - Facultad de Ciencias Jurídicas y Relaciones Internacionales"
+    orcid: "https://orcid.org/0009-0007-8851-9833"
+abstract: >-
+  MVP académico para el análisis crítico del empleo tecnológico
+  en España a partir de la Encuesta de Población Activa (EPA)
+  del primer trimestre de 2026. La aplicación documenta y
+  cuantifica la divergencia entre dos métricas concurrentes
+  del empleo tecnológico: por rama de actividad (CNAE Sección J)
+  y por ocupación (CNO 25/35), evidenciando que ~333.000
+  profesionales tecnológicos están embebidos en sectores no
+  tecnológicos. El proyecto incluye análisis estadístico formal
+  (Mann-Kendall, descomposición STL, Friedman) que valida la
+  hipótesis del "millón invisible" como fenómeno estructural
+  creciente, no coyuntural.
+keywords:
+  - empleo tecnológico
+  - EPA
+  - CNAE
+  - estadística pública
+  - filosofía de la tecnología
+  - causa segunda
+  - Spain ICT employment
+  - statistical performativity
+license: MIT
+version: 0.2.0
+date-released: "2026-04-29"
+url: "https://github.com/jtamames/empleo-tic-mvp"
+repository-code: "https://github.com/jtamames/empleo-tic-mvp"
+preferred-citation:
+  type: article
+  title: "El millón invisible: divergencia rama/ocupación en el empleo tecnológico español"
+  authors:
+    - given-names: José
+      family-names: Fernández Tamames
+      orcid: "https://orcid.org/0009-0007-8851-9833"
+  year: 2026
+  journal: "Ratio & Machina · Cuadernos de Filosofía y Tecnología"
+  volume: 1
+  issue: 1
+  status: in-preparation
+references:
+  - type: report
+    title: "Encuesta de Población Activa - Primer trimestre 2026"
+    authors:
+      - name: "Instituto Nacional de Estadística"
+    year: 2026
+    url: "https://www.ine.es/dyngs/Prensa/EPA1T26.htm"
+  - type: report
+    title: "Empleo Tecnológico - Edición 2025"
+    authors:
+      - name: "Observatorio Nacional de Tecnología y Sociedad (ONTSI - Red.es)"
+    year: 2025
+    url: "https://www.ontsi.es/es/publicaciones/empleo-tecnologico"
+  - type: report
+    title: "Mercado de trabajo en sector telecomunicaciones e IT 2025"
+    authors:
+      - name: "Randstad Research"
+    year: 2026
+    url: "https://www.randstadresearch.es/mercado-trabajo-sector-telecomunicaciones-it/"

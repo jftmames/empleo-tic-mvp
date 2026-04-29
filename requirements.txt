@@ -1,0 +1,13 @@
+# ═══ Core MVP (Streamlit) ════════════════════════════════════════════════════
+streamlit>=1.32.0
+pandas>=2.0.0
+plotly>=5.18.0
+openpyxl>=3.1.0
+
+# ═══ Análisis estadístico formal (notebook) ═══════════════════════════════════
+jupyter>=1.0.0
+jupyterlab>=4.0.0
+matplotlib>=3.7.0
+scipy>=1.11.0
+statsmodels>=0.14.0
+seaborn>=0.13.0

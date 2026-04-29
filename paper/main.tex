@@ -1,0 +1,355 @@
+\documentclass[11pt,a4paper]{article}
+
+% ─────────── Packages ───────────
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{ebgaramond}            % Serif elegante
+\usepackage[margin=2.7cm]{geometry}
+\usepackage{microtype}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{amsmath, amssymb}
+\usepackage{siunitx}
+\usepackage[hidelinks]{hyperref}
+\usepackage[round, sort&compress]{natbib}
+\usepackage{authblk}
+\usepackage{titlesec}
+\usepackage{xcolor}
+
+\definecolor{accent}{HTML}{7A1F1F}
+\definecolor{ink}{HTML}{1A1612}
+\hypersetup{citecolor=accent, urlcolor=accent, linkcolor=ink}
+
+\titleformat*{\section}{\Large\itshape\color{ink}}
+\titleformat*{\subsection}{\large\itshape\color{ink}}
+
+% ─────────── Front matter ───────────
+\title{\textbf{El millón invisible}\\[0.3em]
+\large\itshape Divergencia rama--ocupación en el empleo tecnológico español\\
+y la performatividad de la estadística pública (EPA T1 2026)}
+
+\author[1]{José Fernández Tamames\thanks{
+\href{mailto:jtamames@unie.es}{jtamames@unie.es};
+ORCID: \href{https://orcid.org/0009-0007-8851-9833}{0009-0007-8851-9833}}}
+\affil[1]{UNIE Universidad, Madrid · Cátedra de Filosofía y Tecnología}
+
+\date{29 de abril de 2026 \\ \textit{Borrador para \textit{Ratio \& Machina}, vol. I, n.\textsuperscript{o} 1}}
+
+\begin{document}
+\maketitle
+
+% ─────────── Abstract ───────────
+\begin{abstract}
+\noindent
+La medición pública del empleo tecnológico en España convive con dos definiciones
+operativas que arrojan magnitudes radicalmente distintas: una basada en la rama
+de actividad (Sección J de la CNAE-2009) y otra en la ocupación (códigos CNO-2011
+de profesionales TIC). En 2024, la primera contabiliza unos 644.000 ocupados; la
+segunda supera el millón. La diferencia ---el ``millón invisible''--- corresponde
+a profesionales tecnológicos embebidos en sectores no tecnológicos. Sobre la
+serie reconstruida 2019Q3--2026Q1, el test de Mann-Kendall confirma tendencia
+creciente significativa del agregado ($Z = 5{,}74$, $p < 0{,}001$) con
+recomposición interna heterogénea: caída estructural de Telecomunicaciones,
+crecimiento sostenido de Actividades informáticas. La descomposición STL
+demuestra estacionalidad cuasi-nula del sector, anulando el argumento del ruido
+estacional para explicar contracciones trimestrales. Más allá de los hallazgos
+empíricos, el trabajo propone una lectura filosófica: la transición CNAE-2009
+$\rightarrow$ CNAE-2025 (Reglamento Delegado UE 2023/137), que escinde la
+Sección J en dos secciones nuevas, materializa la \emph{performatividad} del
+dato administrativo. Las ramas más expuestas a la automatización
+---almacenamiento, reparación de maquinaria, actividades técnicas auxiliares---
+cambian de hogar estadístico precisamente cuando más relevante sería medir su
+evolución con consistencia. La estadística pública es ya un actor del fenómeno
+que mide.
+
+\medskip
+\noindent\textbf{Palabras clave:} empleo tecnológico, EPA, CNAE, performatividad
+del dato, filosofía de la tecnología, causa segunda, automatización.
+
+\medskip
+\noindent\textbf{Códigos JEL:} J21, J24, O33, C82.
+\end{abstract}
+
+% ═══════════════════════════════════════════════════════════════════════════
+\section{Introducción}
+
+La pregunta sobre cuántas personas trabajan en el ámbito tecnológico en España
+parece resoluble por consulta directa a la fuente oficial: la Encuesta de
+Población Activa (EPA) del Instituto Nacional de Estadística publica
+trimestralmente el empleo desagregado por rama de actividad económica. Sin
+embargo, dos cifras concurren legítimamente, sin que ninguna sea errónea, para
+responder a esa pregunta. La primera ---rama de actividad--- contabiliza
+ocupados en empresas cuya actividad principal está clasificada como
+``Información y comunicaciones'' (Sección J de la CNAE-2009). La segunda
+---ocupación--- contabiliza personas cuyo puesto desempeñado se codifica
+como ``profesional TIC'' en la CNO-2011, con independencia del sector económico
+de la empresa empleadora. Las dos tienen respaldo metodológico en estadísticas
+oficiales (EPA, ONTSI) y agregaciones europeas (Eurostat).
+
+La discrepancia entre ambas, lejos de ser un artefacto técnico, expresa una
+transformación estructural del trabajo: la difusión del trabajo tecnológico
+\emph{fuera} del perímetro de las empresas tecnológicas. Esta nota empírica
+documenta el fenómeno para España (2019--2026), formaliza estadísticamente su
+crecimiento, y propone una lectura filosófica de sus implicaciones para la
+estadística pública en el contexto de la transición CNAE-2009 $\rightarrow$
+CNAE-2025.
+
+% ═══════════════════════════════════════════════════════════════════════════
+\section{Datos y método}
+
+\subsection{Fuentes}
+
+Se utilizan tres fuentes complementarias:
+\begin{itemize}
+\item \textbf{EPA-INE}, notas de prensa trimestrales 2019Q3--2026Q1 y series
+  agregadas de la Sección J reconstruidas a partir de la edición Randstad
+  Research \citep{randstad2026}, que desagrega Sección J en sus tres divisiones
+  (61 Telecomunicaciones, 62 Programación/consultoría, 63 Servicios de
+  información).
+\item \textbf{ONTSI 2025} \citep{ontsi2025}, informe anual sobre empleo
+  tecnológico que reporta especialistas TIC por ocupación (CNO 25/35) con serie
+  2018--2024.
+\item Reglamento Delegado UE 2023/137 \citep{ue2023137} sobre la transición
+  NACE Rev. 2 $\rightarrow$ NACE Rev. 2.1 / CNAE-2025 \citep{rd102025}.
+\end{itemize}
+
+\subsection{Métodos estadísticos}
+
+\paragraph{Test de tendencia.} Se aplica el test de Mann-Kendall modificado por
+\citet{hamed1998} para corregir la autocorrelación de las series trimestrales
+de empleo. La pendiente de Sen estima la magnitud anual de la tendencia.
+
+\paragraph{Descomposición.} La componente tendencial, estacional y residual se
+estiman mediante STL (Seasonal-Trend decomposition using LOESS) con período
+$s = 4$ y ajuste robusto. Se reportan ratios $\text{Var}(C)/\text{Var}(Y)$ para
+$C \in \{T, S, R\}$.
+
+\paragraph{Comparación entre subsectores.} Test no paramétrico de Friedman
+sobre las distribuciones de variaciones interanuales por subsector ($n=23$
+trimestres). Análisis post-hoc por pares con Wilcoxon de rangos signados y
+corrección Bonferroni ($\alpha = 0{,}05/3 = 0{,}0167$).
+
+% ═══════════════════════════════════════════════════════════════════════════
+\section{Resultados}
+
+\subsection{La divergencia rama/ocupación}
+
+La Tabla~\ref{tab:divergencia} muestra la evolución del gap entre ambas
+métricas. En 2019, los especialistas TIC superaban en 192.600 personas al
+empleo en Sección J ($+40{,}8\%$ sobre la rama); en 2024, el gap asciende a
+355.800 ($+55{,}2\%$). El test de Mann-Kendall sobre la serie del gap absoluto
+arroja $Z=2{,}73$, $p=0{,}006$, con pendiente de Sen $\approx +28$~mil
+personas/año.
+
+\begin{table}[h]
+\centering
+\caption{Evolución de la divergencia rama--ocupación, 2019--2024
+\textit{(miles de personas)}}
+\label{tab:divergencia}
+\begin{tabular}{lrrrr}
+\toprule
+\textbf{Año} & \textbf{Rama (Sección J)} & \textbf{Ocupación (CNO TIC)} & \textbf{Gap} & \textbf{Gap \%} \\
+\midrule
+2019 & 472,4 & 665 & 192,6 & 40,8 \\
+2020 & 485,4 & 727 & 241,6 & 49,8 \\
+2021 & 516,6 & 775 & 258,5 & 50,0 \\
+2022 & 555,8 & 820 & 264,2 & 47,5 \\
+2023 & 589,5 & 915 & 325,5 & 55,2 \\
+\textbf{2024} & \textbf{644,2} & \textbf{1.000} & \textbf{355,8} & \textbf{55,2} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Tendencia y estacionalidad}
+
+La Tabla~\ref{tab:mk} resume los resultados del test de Mann-Kendall por
+subsector. Actividades informáticas exhibe tendencia creciente significativa
+($Z=2{,}83$); el agregado de Sección J, fuertemente significativa ($Z=5{,}74$).
+Telecomunicaciones muestra tendencia decreciente no significativa pero
+consistente. La descomposición STL (Tabla~\ref{tab:stl}) revela que la
+componente estacional explica menos del 1\% de la varianza en todas las series,
+muy por debajo del rango habitual en sectores estacionales como hostelería
+($> 50\%$).
+
+\begin{table}[h]
+\centering
+\caption{Test de Mann-Kendall modificado · series 2019Q3--2026Q1}
+\label{tab:mk}
+\begin{tabular}{lrrrl}
+\toprule
+\textbf{Serie} & $\boldsymbol{Z}$ & $\boldsymbol{p}$ & \textbf{Sen/año} & \textbf{Tendencia} \\
+\midrule
+Actividades informáticas & 2,83 & 0,005 & +26,2 & creciente** \\
+Telecomunicaciones       & --1,55 & 0,122 & --2,4 & no signif. \\
+Servicios información    & --0,50 & 0,619 & --0,8 & ambigua \\
+\textbf{Total Sección J} & \textbf{5,74} & $\boldsymbol{<0{,}001}$ & \textbf{+34,4} & \textbf{creciente***} \\
+\bottomrule
+\multicolumn{5}{l}{\footnotesize\textit{Significatividad}: *** $p<0{,}001$; ** $p<0{,}01$; * $p<0{,}05$.}
+\end{tabular}
+\end{table}
+
+\begin{table}[h]
+\centering
+\caption{Descomposición STL · varianza explicada por componente}
+\label{tab:stl}
+\begin{tabular}{lrrr}
+\toprule
+\textbf{Serie} & $\text{Var}(T)/\text{Var}(Y)$ & $\text{Var}(S)/\text{Var}(Y)$ & $\text{Var}(R)/\text{Var}(Y)$ \\
+\midrule
+Actividades informáticas & 0,972 & 0,000 & 0,003 \\
+Telecomunicaciones       & 0,927 & 0,006 & 0,032 \\
+Total Sección J          & 0,912 & 0,000 & 0,020 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Heterogeneidad inter-subsectorial}
+
+El test de Friedman sobre las variaciones interanuales rechaza la hipótesis nula
+de equivalencia distribucional ($\chi^2 = 35{,}2$, $p < 0{,}001$). El análisis
+post-hoc indica que Actividades informáticas se distingue significativamente
+tanto de Telecomunicaciones como de Servicios de información ($p < 0{,}0001$ en
+ambos casos), mientras que estas dos últimas no son distinguibles entre sí
+($p = 0{,}58$). La cifra agregada del sector ($-2{,}2\%$ interanual en T3 2025
+\citep{randstad2026}) encubre, por tanto, una recomposición interna asimétrica.
+
+% ═══════════════════════════════════════════════════════════════════════════
+\section{Discusión}
+
+\subsection{Implicaciones empíricas}
+
+Los hallazgos sugieren tres tesis sobre el empleo tecnológico español:
+
+\textbf{(1)} El \emph{sector tech} como categoría operativa pierde poder
+descriptivo. El crecimiento del empleo tecnológico ocurre cada vez más fuera
+del perímetro CNAE de las empresas tecnológicas. La proporción del talento TIC
+embebido en sectores tradicionales pasó del 41\% (2019) al 55\% (2024). La
+política industrial enfocada en ``el sector TIC'' está optimizando para una
+fracción decreciente del fenómeno.
+
+\textbf{(2)} La caída de Telecomunicaciones no es coyuntural sino estructural.
+Refleja la consumación del modelo de externalización de las grandes operadoras
+hacia integradores y consultoras informáticas. La estadística agregada lo
+percibe como contracción donde lo que ocurre es transferencia interna de
+trabajadores entre divisiones (61 $\rightarrow$ 62).
+
+\textbf{(3)} La concentración geográfica Madrid--Cataluña ($\sim 60\%$ del
+empleo TIC, índice HHI $\approx 1.684$) constituye un factor de riesgo
+sistémico para la transformación digital nacional, en contradicción con el
+discurso oficial de la ``España conectada''.
+
+\subsection{La performatividad de la categoría administrativa}
+
+\noindent
+La transición CNAE-2009 $\rightarrow$ CNAE-2025, en vigor desde marzo de 2025
+y con doble codificación durante 2026, escinde la antigua Sección J en dos
+secciones nuevas: J (edición, radiodifusión, contenidos) y K (telecomunicaciones,
+programación, consultoría TI). El sector tecnológico deja de localizarse con
+una sola letra. Más críticamente, las ramas más expuestas a la automatización
+---reparación de maquinaria, almacenamiento, actividades técnicas auxiliares---
+se redistribuyen entre Industria, Construcción y Servicios de manera que las
+series longitudinales pierden continuidad.
+
+Esta no es una limitación técnica de la EPA, sino la expresión, en el plano de
+la estadística pública, de un fenómeno conceptualmente más profundo. En la
+terminología filosófica que el autor ha desarrollado en otra parte
+\citep{tamames2024causa}, el dato administrativo opera como \emph{causa segunda}:
+no genera autónomamente el fenómeno medido, pero al codificarlo lo configura,
+y al recodificarlo lo reescribe. La transición CNAE no responde a un cambio
+del mundo: responde a una decisión administrativa europea (Reglamento Delegado
+UE 2023/137) que, sin embargo, modifica el objeto que la propia administración
+mide. La performatividad, lejos de ser una propiedad excepcional del lenguaje,
+resulta ser una característica estructural de toda categorización oficial.
+
+La consecuencia operativa es que toda comparación interanual de empleo
+sectorial T1 2027 vs.\ T1 2026 que no recurra a la matriz de transición
+publicada por el INE producirá artefactos espurios. La comunidad estadística
+y el discurso público disponen, durante 2026, de un breve período crítico de
+doble codificación para construir series de enlace; agotado este margen, la
+serie histórica del empleo tecnológico español requerirá, para fines
+comparativos, una operación de retraducción que necesariamente introducirá
+discrecionalidad metodológica.
+
+% ═══════════════════════════════════════════════════════════════════════════
+\section{Conclusiones y agenda de investigación}
+
+Este trabajo ha cuantificado, con métodos estadísticos no paramétricos
+robustos, una divergencia creciente entre dos definiciones legítimas del
+empleo tecnológico en España: una crece a +28~mil personas/año más rápido que
+la otra. El fenómeno no es una rareza de la contabilidad pública sino el
+síntoma estadístico de una transformación material: el trabajo tecnológico se
+ha convertido en una función distribuida en toda la economía, no en una rama
+sectorial localizable.
+
+Las extensiones naturales del análisis incluyen: \emph{(a)} replicación con
+microdatos EPA brutos a partir del T1 2026 (con doble codificación), una vez
+disponibles; \emph{(b)} análisis comparativo a nivel europeo con NACE Rev.~2.1
+como referencia; \emph{(c)} cuantificación del ``drift'' categórico inducido
+por la transición CNAE-2009 $\rightarrow$ CNAE-2025 sobre series clave de
+política industrial; y \emph{(d)} cruce con afiliación al Régimen General de
+Seguridad Social como validación independiente de las series EPA.
+
+El código y los datos que reproducen todos los análisis presentados están
+disponibles bajo licencia MIT en
+\href{https://github.com/jtamames/empleo-tic-mvp}{github.com/jtamames/empleo-tic-mvp},
+con DOI Zenodo asociado. La estadística pública es objeto de filosofía
+política contemporánea; este es un primer banco de pruebas empírico.
+
+% ═══════════════════════════════════════════════════════════════════════════
+\section*{Disponibilidad de datos y código}
+
+Todo el material reproducible (datos, código de análisis, notebooks Jupyter
+con el análisis estadístico formal completo, app Streamlit interactiva y este
+manuscrito en LaTeX) está depositado bajo licencia MIT en el repositorio
+GitHub citado, con identificador persistente en Zenodo.
+
+\section*{Agradecimientos}
+
+A Susana Checa (UNIE) por discusiones sobre las implicaciones jurídicas del
+cambio de clasificación. Los errores remanentes son responsabilidad exclusiva
+del autor.
+
+% ═══════════════════════════════════════════════════════════════════════════
+\bibliographystyle{plainnat}
+\begin{thebibliography}{99}
+
+\bibitem[Hamed and Rao(1998)]{hamed1998}
+Hamed, K.~H. and Rao, A.~R. (1998).
+A modified Mann-Kendall trend test for autocorrelated data.
+\textit{Journal of Hydrology}, 204(1):182--196.
+
+\bibitem[INE(2026)]{ine2026}
+Instituto Nacional de Estadística (2026).
+\textit{Encuesta de Población Activa, primer trimestre de 2026 --- Nota de prensa}.
+INE, Madrid.
+
+\bibitem[ONTSI(2025)]{ontsi2025}
+Observatorio Nacional de Tecnología y Sociedad (2025).
+\textit{Empleo Tecnológico en España. Edición 2025}.
+ONTSI / Red.es, Madrid.
+
+\bibitem[Randstad Research(2026)]{randstad2026}
+Randstad Research (2026).
+\textit{Mercado de trabajo en sector telecomunicaciones e IT 2025}.
+Randstad España, Madrid.
+
+\bibitem[Reglamento UE(2023)]{ue2023137}
+Reglamento Delegado (UE) 2023/137 de la Comisión, de 10 de octubre de 2022,
+que modifica el Reglamento (CE) n.\textsuperscript{o} 1893/2006.
+\textit{Diario Oficial de la Unión Europea}, L 19/1.
+
+\bibitem[Real Decreto 10/2025]{rd102025}
+Real Decreto 10/2025, de 14 de enero, por el que se aprueba la Clasificación
+Nacional de Actividades Económicas 2025 (CNAE-2025).
+\textit{Boletín Oficial del Estado}, 13 (15 enero 2025), pp. 4801--5014.
+
+\bibitem[Tamames(2024)]{tamames2024causa}
+Fernández Tamames, J. (2024).
+\textit{La Causa Primera: sinfonía filosófica en cinco movimientos con obertura}.
+PhilArchive / Zenodo. \href{https://philarchive.org/}{philarchive.org}.
+
+\end{thebibliography}
+
+\end{document}
