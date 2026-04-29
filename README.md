@@ -274,5 +274,6 @@ UNIE Universidad · Cátedra de Filosofía y Tecnología
 5. Cedefop (2025). *Skills Forecast — España*.
 
 ---
+Fernández Tamames, J. (2026). Empleo Tecnológico en España: el millón invisible (v1.0.2). Zenodo. https://doi.org/10.5281/zenodo.19888187
 
 *Licencia MIT · UNIE Universidad · Cátedra de Filosofía y Tecnología · 2026*
