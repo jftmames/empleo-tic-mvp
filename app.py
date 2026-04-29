@@ -572,7 +572,7 @@ st.markdown("""
 font-family: JetBrains Mono, monospace; font-size: 0.7rem; letter-spacing: 0.05em;
 color: #4a4239; padding: 1rem 0;'>
 <div>MVP académico v0.1 · UNIE Universidad · Cátedra de Filosofía y Tecnología</div>
-<div>José Fernández Tamames · jtamames@unie.es</div>
+<div>José Fernández Tamames · jose.fernandezt@universidadunie.com</div>
 <div>Generado el 29·IV·2026</div>
 </div>
 """, unsafe_allow_html=True)
