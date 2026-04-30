@@ -85,11 +85,14 @@ with st.sidebar:
     st.divider()
 
     st.markdown("### Filtros temporales")
-    años_disponibles = sorted(set(df_macro["año"].unique()) | set(df_sector["año"].unique()))
+    # Convertir a int nativo Python (los CSVs cargan numpy.int64, lo que rompe select_slider)
+    años_disponibles = sorted(int(a) for a in set(df_macro["año"].unique()) | set(df_sector["año"].unique()))
+    # Default: desde 2014 si está disponible, si no desde el primero
+    año_default_inicio = 2014 if 2014 in años_disponibles else años_disponibles[0]
     año_min, año_max = st.select_slider(
         "Rango de años",
         options=años_disponibles,
-        value=(2014, años_disponibles[-1]),
+        value=(año_default_inicio, años_disponibles[-1]),
         help="Rango disponible: 2008-2026 (macro EPA), 2014-2026 (sector TIC), 2011-2024 (ONTSI)",
     )
 
