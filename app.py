@@ -23,7 +23,7 @@ from io import BytesIO
 
 from modules.data_loader import (
     load_sector_tic, load_especialistas_tic, load_ccaa,
-    load_epa_macro, get_data_provenance,
+    load_epa_macro, load_adopcion_ia, get_data_provenance,
 )
 from modules.analysis import (
     calcular_variaciones, calcular_divergencia,
@@ -74,6 +74,7 @@ df_sector = load_sector_tic()
 df_especialistas = load_especialistas_tic()
 df_ccaa = load_ccaa()
 df_macro = load_epa_macro()
+df_adopcion = load_adopcion_ia()
 
 # ═════════════════════════════ Sidebar ═══════════════════════════════════════
 with st.sidebar:
@@ -84,11 +85,12 @@ with st.sidebar:
     st.divider()
 
     st.markdown("### Filtros temporales")
-    años = sorted(df_sector["año"].unique())
+    años_disponibles = sorted(set(df_macro["año"].unique()) | set(df_sector["año"].unique()))
     año_min, año_max = st.select_slider(
         "Rango de años",
-        options=años,
-        value=(años[0], años[-1]),
+        options=años_disponibles,
+        value=(2014, años_disponibles[-1]),
+        help="Rango disponible: 2008-2026 (macro EPA), 2014-2026 (sector TIC), 2011-2024 (ONTSI)",
     )
 
     st.markdown("### Métrica del empleo TIC")
@@ -128,9 +130,10 @@ df_sector_f = df_sector[(df_sector["año"] >= año_min) & (df_sector["año"] <= 
 df_macro_f = df_macro[(df_macro["año"] >= año_min) & (df_macro["año"] <= año_max)]
 
 # ═════════════════════════════ Tabs ══════════════════════════════════════════
-tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs([
+tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8 = st.tabs([
     "I · Macro EPA", "II · Divergencia", "III · Subsectores",
-    "IV · Geografía", "V · Metodología", "VI · Datos", "VII · Pipeline"
+    "IV · Geografía", "V · Metodología", "VI · Datos", "VII · Pipeline",
+    "VIII · Diálogo Funcas"
 ])
 
 # ──────────────────────────── TAB I: Macro ───────────────────────────────────
@@ -565,6 +568,192 @@ with tab7:
     </div>
     """, unsafe_allow_html=True)
 
+# ──────────────────────────── TAB VIII: Diálogo Funcas ───────────────────────
+with tab8:
+    st.markdown("## § VIII — Diálogo crítico con *Funcas* (2026)")
+
+    st.markdown("""
+    <div style='font-family: Cormorant Garamond, serif; font-size: 1.15rem;
+    line-height: 1.5; font-style: italic; color: #4a4239; max-width: 720px;
+    margin-bottom: 1.5rem;'>
+    El informe Rodríguez-Fernández (Funcas, abril 2026) estima una destrucción
+    bruta de entre 1,7 y 2,3 millones de empleos en España por efecto de la IA
+    a horizonte 2025-2035. Esta sección dialoga críticamente con esas estimaciones
+    desde el ángulo del MVP: no compite con ellas, las problematiza.
+    </div>
+    """, unsafe_allow_html=True)
+
+    # Tres escenarios de Funcas
+    st.markdown("### Los tres escenarios de Funcas")
+    df_escenarios = pd.DataFrame({
+        "Escenario": ["Optimista", "Central", "Pesimista"],
+        "δ_sust (sustitución)": [0.10, 0.22, 0.35],
+        "γ (automatización 10y)": [0.40, 0.65, 0.85],
+        "ρ (adopción empresarial)": [0.12, 0.21, 0.40],
+        "Destrucción bruta (millones)": [0.7, 2.0, 3.5],
+        "Creación (millones)": [1.61, 1.61, 1.61],
+        "Pérdida neta (millones)": [-0.91, 0.39, 1.89],
+    })
+    st.dataframe(df_escenarios, width="stretch", hide_index=True)
+
+    st.caption("Fuente: Rodríguez-Fernández (Funcas, 2026). La creación es exógena al modelo y proviene de Randstad/COIT 2024.")
+
+    # Adopción IA empresarial real
+    st.markdown("### Velocidad real de adopción · serie ETICCE INE")
+
+    col1, col2 = st.columns([2, 1])
+    with col1:
+        import plotly.graph_objects as go
+        fig_adop = go.Figure()
+        fig_adop.add_trace(go.Scatter(
+            x=df_adopcion["año"], y=df_adopcion["pct_empresas_uso_ia"],
+            mode="lines+markers", name="Total empresas (≥10 emp.)",
+            line=dict(color="#7a1f1f", width=3.5),
+            marker=dict(size=11),
+        ))
+        fig_adop.add_trace(go.Scatter(
+            x=df_adopcion["año"], y=df_adopcion["pct_sector_tic"],
+            mode="lines+markers", name="Sector TIC",
+            line=dict(color="#1a1612", width=2.5, dash="dot"),
+            marker=dict(size=8),
+        ))
+        fig_adop.add_trace(go.Scatter(
+            x=df_adopcion["año"], y=df_adopcion["pct_servicios"],
+            mode="lines+markers", name="Servicios",
+            line=dict(color="#b8860b", width=2),
+        ))
+        fig_adop.add_trace(go.Scatter(
+            x=df_adopcion["año"], y=df_adopcion["pct_industria"],
+            mode="lines+markers", name="Industria",
+            line=dict(color="#4a6c3f", width=2),
+        ))
+        fig_adop.update_layout(
+            paper_bgcolor="#f4f1ea", plot_bgcolor="#f4f1ea",
+            title="Adopción de IA por sector · % de empresas que la usan",
+            yaxis_title="% empresas",
+            xaxis_title="Año",
+            height=400,
+            font=dict(family="Inter, sans-serif", size=12, color="#1a1612"),
+            legend=dict(orientation="h", y=1.08, x=0),
+        )
+        st.plotly_chart(fig_adop, width="stretch")
+    with col2:
+        último = df_adopcion.iloc[-1]
+        primero = df_adopcion.iloc[0]
+        delta_4y = último["pct_empresas_uso_ia"] - primero["pct_empresas_uso_ia"]
+        st.metric("Adopción 2025", f"{último['pct_empresas_uso_ia']:.1f}%",
+                  f"+{delta_4y:.1f}pp en 4 años")
+        st.metric("Sector TIC", f"{último['pct_sector_tic']:.1f}%",
+                  "lidera adopción")
+        st.metric("Brecha sector TIC vs total",
+                  f"{último['pct_sector_tic'] - último['pct_empresas_uso_ia']:.1f}pp",
+                  "hipótesis del millón invisible reforzada")
+
+    st.markdown("""
+    <div style='background:#ebe6da; border-left: 3px solid #7a1f1f;
+    padding: 1.5rem 1.8rem; margin: 1rem 0; font-family: Cormorant Garamond, serif;
+    font-size: 1.05rem; line-height: 1.6;'>
+    <strong>Crítica metodológica.</strong> Funcas usa ρ=0,21 como parámetro fijo
+    de adopción para todo el horizonte 2025-2035. La serie real de ETICCE muestra
+    que la adopción <em>se está acelerando</em> a +4,3pp/año. Si esa tasa se
+    mantuviera, en 2035 la adopción rondaría el 60-70% (no el 21% del modelo
+    central). Esto significaría que el escenario "central" de Funcas
+    es probablemente <strong>sustancialmente conservador</strong> en términos
+    del parámetro ρ, lo que empuja la verdadera estimación hacia el escenario
+    pesimista.
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.divider()
+
+    # Las cuatro tesis críticas
+    st.markdown("### Cuatro tesis críticas del MVP al modelo Funcas")
+
+    st.markdown("""
+    <div style='background:#1a1612; color: #f4f1ea; padding: 2rem 2rem;
+    margin: 1.5rem 0;'>
+    <p style='color:#b8860b; font-family: JetBrains Mono, monospace;
+    font-size: 0.75rem; letter-spacing: 0.15em; margin-bottom: 1rem;'>
+    TESIS 1 — INCERTIDUMBRE NO PROPAGADA</p>
+    <p style='color: rgba(244,241,234,0.92); line-height: 1.6; margin-bottom: 1.5rem;'>
+    El modelo encadena <strong>cinco parámetros multiplicativos</strong>
+    (φ · AIOE · δ · γ · ρ), pero presenta sólo tres puntos discretos
+    (optimista/central/pesimista) en lugar de propagar la incertidumbre
+    conjunta vía Monte Carlo. El verdadero intervalo de confianza es
+    probablemente <strong>más amplio</strong> que el rango 700k-3.500k reportado.
+    </p>
+
+    <p style='color:#b8860b; font-family: JetBrains Mono, monospace;
+    font-size: 0.75rem; letter-spacing: 0.15em; margin-bottom: 1rem;'>
+    TESIS 2 — AIOE COMO CATEGORÍA NO PROBLEMATIZADA</p>
+    <p style='color: rgba(244,241,234,0.92); line-height: 1.6; margin-bottom: 1.5rem;'>
+    Felten et al. (2023) construyen AIOE sobre O*NET, que refleja el mercado
+    laboral <strong>estadounidense de los 2010s</strong>. La doble correspondencia
+    SOC→ISCO→CNO opera sobre categorías que están siendo redibujadas
+    administrativamente (CNAE-2025). El parámetro φ=0,82 que ajusta
+    esta pérdida es un <strong>supuesto sin calibración empírica</strong>,
+    como el propio informe reconoce.
+    </p>
+
+    <p style='color:#b8860b; font-family: JetBrains Mono, monospace;
+    font-size: 0.75rem; letter-spacing: 0.15em; margin-bottom: 1rem;'>
+    TESIS 3 — EL "MILLÓN INVISIBLE" SESGA EL MODELO</p>
+    <p style='color: rgba(244,241,234,0.92); line-height: 1.6; margin-bottom: 1.5rem;'>
+    Si el 55% de los profesionales TIC trabaja fuera del sector TIC (ver Tab II),
+    el AIOE-CNO subestima sistemáticamente la exposición real del trabajo
+    tecnológico distribuido. Un programador en un banco se contabiliza como
+    "técnico financiero", no como profesional TIC. La adopción 58,7% del
+    sector TIC <em>vs.</em> 21,1% media empresarial sugiere que el verdadero
+    foco de disrupción es donde el AIOE-CNO no mira.
+    </p>
+
+    <p style='color:#b8860b; font-family: JetBrains Mono, monospace;
+    font-size: 0.75rem; letter-spacing: 0.15em; margin-bottom: 1rem;'>
+    TESIS 4 — LA PERFORMATIVIDAD COMO OBJETO TEÓRICO</p>
+    <p style='color: rgba(244,241,234,0.92); line-height: 1.6;'>
+    Funcas no problematiza filosóficamente las categorías sobre las que opera.
+    Pero la transición CNAE-2009→2025 ocurre simultáneamente con el despliegue
+    de IA: <strong>la administración estadística europea está reescribiendo
+    las categorías del trabajo en el momento exacto en que la IA reescribe
+    el trabajo mismo</strong>. Esto no es una coincidencia: es el objeto teórico
+    central que el marco de la <em>Causa Segunda</em> permite formular.
+    </p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.divider()
+
+    # Predicciones falsables
+    st.markdown("### Lo que el MVP puede falsar del modelo Funcas")
+
+    st.markdown("""
+    El modelo Funcas hace tres predicciones contrastables con datos trimestrales:
+
+    1. **Caída sostenida en grupo CNO 2** (técnicos científicos): el MVP ya observa
+       declive significativo en CNAE 61 (Telecomunicaciones, Z=-1,55) que está
+       dentro del grupo 2. Predicción **parcialmente confirmada**.
+
+    2. **Crecimiento en grupo CNO 5** (servicios) por complementariedad: el MVP
+       muestra Servicios T1 2026 con –228k ocupados pero +254k anual.
+       **Pendiente de validar** con desglose por subsector.
+
+    3. **Aceleración del gap rama/ocupación** si el modelo central acierta:
+       el MVP cuantifica gap creciente +28k/año (Mann-Kendall p=0,006).
+       Predicción **confirmada empíricamente**.
+    """)
+
+    st.markdown("""
+    <div style='background:#ebe6da; border-left: 3px solid #b8860b;
+    padding: 1.2rem 1.5rem; margin: 1rem 0; font-family: Cormorant Garamond, serif;
+    font-size: 1rem; line-height: 1.6;'>
+    <strong>Próximo paso de investigación.</strong> Convertir el MVP en observatorio
+    de validación externa de modelos prospectivos. Cada trimestre que pasa, el
+    pipeline automático compara las predicciones de Funcas (y otros modelos
+    similares) con la evolución observada. Esta función no es una alternativa al
+    informe Funcas: es su contraparte empírica trimestral.
+    </div>
+    """, unsafe_allow_html=True)
+
 # ═════════════════════════════ Footer ════════════════════════════════════════
 st.divider()
 st.markdown("""
@@ -572,7 +761,7 @@ st.markdown("""
 font-family: JetBrains Mono, monospace; font-size: 0.7rem; letter-spacing: 0.05em;
 color: #4a4239; padding: 1rem 0;'>
 <div>MVP académico v0.1 · UNIE Universidad · Cátedra de Filosofía y Tecnología</div>
-<div>José Fernández Tamames · jose.fernandezt@universidadunie.com</div>
+<div>José Fernández Tamames · jtamames@unie.es</div>
 <div>Generado el 29·IV·2026</div>
 </div>
 """, unsafe_allow_html=True)
