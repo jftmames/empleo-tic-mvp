@@ -49,6 +49,18 @@ def load_epa_macro() -> pd.DataFrame:
     return df
 
 
+@st.cache_data(ttl=3600)
+def load_adopcion_ia() -> pd.DataFrame:
+    """Serie anual de adopción de IA en empresas españolas (ETICCE INE).
+
+    Fuente clave para diálogo con informe Funcas (2026): mide la velocidad
+    real de difusión tecnológica que opera como parámetro ρ en modelos de
+    sustitución ocupacional.
+    """
+    df = pd.read_csv(DATA_DIR / "adopcion_ia_empresarial.csv")
+    return df
+
+
 def get_data_provenance() -> dict:
     """Devuelve metadatos de cada fuente para auditoría académica."""
     return {
