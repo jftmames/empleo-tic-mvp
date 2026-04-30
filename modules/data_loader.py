@@ -19,6 +19,8 @@ DATA_DIR = Path(__file__).parent.parent / "data"
 def load_sector_tic() -> pd.DataFrame:
     """Series trimestrales del sector TIC (rama CNAE — Sección J)."""
     df = pd.read_csv(DATA_DIR / "sector_tic_trimestral.csv")
+    df["año"] = df["año"].astype(int)
+    df["trim"] = df["trim"].astype(int)
     df["fecha"] = pd.PeriodIndex(
         df["año"].astype(str) + "Q" + df["trim"].astype(str), freq="Q"
     ).to_timestamp(how="end")
@@ -29,6 +31,7 @@ def load_sector_tic() -> pd.DataFrame:
 def load_especialistas_tic() -> pd.DataFrame:
     """Especialistas TIC anuales (ocupación CNO — métrica ONTSI)."""
     df = pd.read_csv(DATA_DIR / "especialistas_tic_anual.csv")
+    df["año"] = df["año"].astype(int)
     return df
 
 
@@ -43,6 +46,8 @@ def load_ccaa() -> pd.DataFrame:
 def load_epa_macro() -> pd.DataFrame:
     """Macro EPA: ocupados, parados, activos, tasas, sectores."""
     df = pd.read_csv(DATA_DIR / "epa_macro.csv")
+    df["año"] = df["año"].astype(int)
+    df["trim"] = df["trim"].astype(int)
     df["fecha"] = pd.PeriodIndex(
         df["año"].astype(str) + "Q" + df["trim"].astype(str), freq="Q"
     ).to_timestamp(how="end")
